@@ -9,7 +9,7 @@ const GROUP_URL = 'https://group.gtholidays.in';
 // ─────────────────────────────────────────
 // FORM 3 — Group Tours Popup form
 // ─────────────────────────────────────────
-test('Group Tours - Popup Enquiry form fills correctly @form3', async () => {
+test('Group Tours - Popup Enquiry form fills correctly @group_popup', async () => {
 
     // Stealth browser launch
     const browser = await chromium.launch({ headless: process.env.CI ? true : false });
@@ -78,7 +78,7 @@ test('Group Tours - Popup Enquiry form fills correctly @form3', async () => {
 // ─────────────────────────────────────────
 // FORM 4 — Group Tours Inline form
 // ─────────────────────────────────────────
-test('Group Tours - Inline Enquiry form fills correctly @form4', async () => {
+test('Group Tours - Inline Enquiry form fills correctly @group_inline', async () => {
 
     const browser = await chromium.launch({ headless: process.env.CI ? true : false });
     const context = await browser.newContext();
