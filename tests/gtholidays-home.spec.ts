@@ -26,7 +26,7 @@ async function solveMathCaptcha(modal: any) {
 // ─────────────────────────────────────────
 // FORM 1 — Home page Popup form
 // ─────────────────────────────────────────
-test('Home Page - Popup Enquiry form fills correctly', async ({ page }) => {
+test('Home Page - Popup Enquiry form fills correctly @form1', async ({ page }) => {
     await page.goto(HOME_URL);
     await page.waitForLoadState('networkidle');
 
@@ -79,7 +79,7 @@ test('Home Page - Popup Enquiry form fills correctly', async ({ page }) => {
 // ─────────────────────────────────────────
 // FORM 2 — Home page Inline form (scroll down)
 // ─────────────────────────────────────────
-test('Home Page - Inline Enquiry form fills correctly', async ({ page }) => {
+test('Home Page - Inline Enquiry form fills correctly @form2', async ({ page }) => {
     await page.goto(HOME_URL);
     await page.waitForLoadState('networkidle');
 
