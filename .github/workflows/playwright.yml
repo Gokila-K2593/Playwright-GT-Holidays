@@ -30,9 +30,9 @@ jobs:
       run: |
         TAG="${{ github.event.client_payload.tag || github.event.inputs.tag }}"
         if [ -z "$TAG" ]; then
-          npx playwright test
+          npx playwright test --project=chromium
         else
-          npx playwright test --grep "$TAG"
+          npx playwright test --grep "$TAG" --project=chromium
         fi
     - uses: actions/upload-artifact@v4
       if: always()

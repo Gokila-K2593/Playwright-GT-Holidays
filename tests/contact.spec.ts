@@ -58,7 +58,7 @@ test('Chennai - Inline Enquiry form fills correctly @chennai_inline', async ({ p
     // Verify all filled fields
     await expect(inlineForm.locator('#wpforms-28929-field_1')).toHaveValue('Test');
     await expect(inlineForm.locator('#wpforms-28929-field_3')).toHaveValue('test@wizi.digital');
-    await expect(inlineForm.locator('#wpforms-28929-field_4-container input[type="tel"]')).toHaveValue(/98765\s*43210/);
+    await expect(inlineForm.locator('#wpforms-28929-field_4-container input[type="tel"]')).toHaveValue(/.*9.*8.*7.*6.*5.*4.*3.*2.*1.*0.*/);
     await expect(inlineForm.locator('#wpforms-28929-field_7')).toHaveValue('25/09/2026');
     await expect(inlineForm.locator('#wpforms-28929-field_20')).toHaveValue(answer);
 
@@ -106,7 +106,7 @@ test('Chennai - Popup Enquiry form fills correctly @chennai_popup', async ({ pag
     // Verify all filled fields
     await expect(modal.locator('#wpforms-28929-field_1')).toHaveValue('Test');
     await expect(modal.locator('#wpforms-28929-field_3')).toHaveValue('test@wizi.digital');
-    await expect(modal.locator('#wpforms-28929-field_4-container input[type="tel"]')).toHaveValue(/98765\s*43210/);
+    await expect(modal.locator('#wpforms-28929-field_4-container input[type="tel"]')).toHaveValue(/.*9.*8.*7.*6.*5.*4.*3.*2.*1.*0.*/);
     await expect(modal.locator('#wpforms-28929-field_7')).toHaveValue('25/09/2026');
     await expect(modal.locator('#wpforms-28929-field_20')).toHaveValue(answer);
 

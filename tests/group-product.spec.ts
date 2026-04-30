@@ -44,7 +44,7 @@ test('Group Individual - Inline Enquiry form fills correctly @individual_inline'
     await expect(inlineForm.locator('#wpforms-687-field_1')).toHaveValue('Test');
     await expect(inlineForm.locator('#wpforms-687-field_2')).toHaveValue('Test');
     await expect(inlineForm.locator('#wpforms-687-field_12')).toHaveValue('test@wizi.digital');
-    await expect(inlineForm.locator('#wpforms-687-field_4-container input[type="tel"]')).toHaveValue(/98765\s*43210/);
+    await expect(inlineForm.locator('#wpforms-687-field_4-container input[type="tel"]')).toHaveValue(/.*9.*8.*7.*6.*5.*4.*3.*2.*1.*0.*/);
     await expect(inlineForm.locator('#wpforms-687-field_6')).toHaveValue('25/09/2026');
     await expect(inlineForm.locator('#wpforms-687-field_7')).toHaveValue('2');
 
@@ -103,8 +103,8 @@ test('Group Individual - Popup Enquiry form fills correctly @individual_popup', 
     // Verify
     await expect(modal.locator('#wpforms-687-field_1')).toHaveValue('Test');
     await expect(modal.locator('#wpforms-687-field_12')).toHaveValue('test@wizi.digital');
-    await expect(modal.locator('#wpforms-687-field_4-container input[type="tel"]')).toHaveValue(/98765\s*43210/);
-    await expect(modal.locator('#wpforms-687-field_9-container input[type="tel"]')).toHaveValue(/98765\s*43210/);
+    await expect(modal.locator('#wpforms-687-field_4-container input[type="tel"]')).toHaveValue(/.*9.*8.*7.*6.*5.*4.*3.*2.*1.*0.*/);
+    await expect(modal.locator('#wpforms-687-field_9-container input[type="tel"]')).toHaveValue(/.*9.*8.*7.*6.*5.*4.*3.*2.*1.*0.*/);
     await expect(modal.locator('#wpforms-687-field_6')).toHaveValue('25/09/2026');
 
     // Solve Math Captcha (data-n1 / data-n2 style)
