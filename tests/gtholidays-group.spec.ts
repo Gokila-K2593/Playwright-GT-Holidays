@@ -53,7 +53,7 @@ test('Group Tours - Popup Enquiry form fills correctly @form3', async () => {
     await expect(modal.locator('#wpforms-687-field_12')).toHaveValue('test@wizi.digital');
     await expect(
         modal.locator('#wpforms-687-field_4-container input[type="tel"]')
-    ).toHaveValue(/.*987.*654.*3210/);
+    ).toHaveValue(/98765\s*43210/);
     await expect(modal.locator('#wpforms-687-field_5')).toHaveValue('Test');
     await expect(modal.locator('#wpforms-687-field_6')).toHaveValue('25/09/2026');
     await expect(modal.locator('#wpforms-687-field_7')).toHaveValue('2');
@@ -120,7 +120,7 @@ test('Group Tours - Inline Enquiry form fills correctly @form4', async () => {
     await expect(inlineForm.locator('#wpforms-687-field_12')).toHaveValue('test@wizi.digital');
     await expect(
         inlineForm.locator('#wpforms-687-field_4-container input[type="tel"]')
-    ).toHaveValue(/.*987.*654.*3210/);
+    ).toHaveValue(/98765\s*43210/);
     await expect(inlineForm.locator('#wpforms-687-field_5')).toHaveValue('Test');
     await expect(inlineForm.locator('#wpforms-687-field_6')).toHaveValue('25/09/2026');
     await expect(inlineForm.locator('#wpforms-687-field_7')).toHaveValue('2');
