@@ -7,7 +7,7 @@ chromium.use(StealthPlugin());
 const PRODUCT_URL = 'https://group.gtholidays.in/product/europe-summer-group-departure-chennai/';
 
 // ─────────────────────────────────────────
-// FORM 12a — Group Individual Inline form
+// Form 7 — Group Individual Inline form
 // ─────────────────────────────────────────
 test('Group Individual - Inline Enquiry form fills correctly @individual_inline', async () => {
 
