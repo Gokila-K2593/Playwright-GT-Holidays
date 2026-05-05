@@ -60,32 +60,30 @@ async function waitForToken(page: any) {
 // ─────────────────────────────────────────
 test('Group Individual - Inline Enquiry form fills correctly @individual_inline', async () => {
     test.setTimeout(180000);
-    const browser = await chromium.launch({ 
-      headless: process.env.CI ? true : false 
+    const browser = await chromium.launch({
+        headless: process.env.CI ? true : false
     });
     const context = await browser.newContext({ userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:122.0) Gecko/20100101 Firefox/122.0', viewport: { width: 1280, height: 720 }, locale: 'en-IN', timezoneId: 'Asia/Kolkata' });
     const page = await context.newPage();
 
-    // Intercept Google reCAPTCHA server-side verification
-    await page.route('**/recaptcha/api/siteverify**', async route => {
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({
-          success: true,
-          score: 0.9,
-          action: 'submit',
-          challenge_ts: new Date().toISOString(),
-          hostname: 'group.gtholidays.in'
-        })
-      });
+    // Intercept Google reCAPTCHA requests to bypass bot detection
+    // This mocks the response from Google's servers so the form thinks verification passed
+    await page.route('**/(recaptcha/api/siteverify|recaptcha/api2/)**', async route => {
+        await route.fulfill({
+            status: 200,
+            contentType: 'application/json',
+            body: JSON.stringify({
+                success: true,
+                score: 0.9 // High score (0.9) ensures the request is treated as a real human
+            })
+        });
     });
 
     await applyStealth(page);
     await page.goto(PRODUCT_URL, { waitUntil: 'domcontentloaded', timeout: 90000 });
-    
+
     await page.addStyleTag({ content: '#Modalpopup { display: none !important; } .gt-popup-overlay { display: none !important; }' });
-    
+
     const form = page.locator('form#wpforms-form-687').first();
     await form.scrollIntoViewIfNeeded();
 
@@ -94,11 +92,11 @@ test('Group Individual - Inline Enquiry form fills correctly @individual_inline'
     await naturalType(page, form.locator('#wpforms-687-field_12'), 'test@wizi.digital');
     await naturalType(page, form.locator('#wpforms-687-field_4-container input[type="tel"]'), '9876543210');
     await naturalType(page, form.locator('#wpforms-687-field_5'), 'Test');
-    
+
     await form.locator('#wpforms-687-field_6').evaluate((el: HTMLInputElement) => { el.removeAttribute('readonly'); el.value = '25/09/2026'; });
     await form.locator('#wpforms-687-field_7').fill('2');
     await form.locator('#wpforms-687-field_8').selectOption({ index: 2 });
-    
+
     const captchaInput = form.locator('#wpforms-687-field_13');
     if (await captchaInput.isVisible()) {
         await captchaInput.fill(await solveMathCaptcha(form));
@@ -107,7 +105,7 @@ test('Group Individual - Inline Enquiry form fills correctly @individual_inline'
     await runSimulation(page);
     await waitForToken(page);
     await form.locator('#wpforms-submit-687').click({ force: true });
-    
+
     const successMsg = page.locator('div[id^="wpforms-confirmation-"], .wpforms-confirmation-container-full');
     await expect(successMsg.first()).toBeVisible({ timeout: 45000 });
     console.log('Group Individual Inline SUCCESS!');
@@ -119,30 +117,28 @@ test('Group Individual - Inline Enquiry form fills correctly @individual_inline'
 // ─────────────────────────────────────────
 test('Group Individual - Popup Enquiry form fills correctly @individual_popup', async () => {
     test.setTimeout(180000);
-    const browser = await chromium.launch({ 
-      headless: process.env.CI ? true : false 
+    const browser = await chromium.launch({
+        headless: process.env.CI ? true : false
     });
     const context = await browser.newContext({ userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:122.0) Gecko/20100101 Firefox/122.0', viewport: { width: 1280, height: 720 }, locale: 'en-IN', timezoneId: 'Asia/Kolkata' });
     const page = await context.newPage();
 
-    // Intercept Google reCAPTCHA server-side verification
-    await page.route('**/recaptcha/api/siteverify**', async route => {
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({
-          success: true,
-          score: 0.9,
-          action: 'submit',
-          challenge_ts: new Date().toISOString(),
-          hostname: 'group.gtholidays.in'
-        })
-      });
+    // Intercept Google reCAPTCHA requests to bypass bot detection
+    // This mocks the response from Google's servers so the form thinks verification passed
+    await page.route('**/(recaptcha/api/siteverify|recaptcha/api2/)**', async route => {
+        await route.fulfill({
+            status: 200,
+            contentType: 'application/json',
+            body: JSON.stringify({
+                success: true,
+                score: 0.9 // High score (0.9) ensures the request is treated as a real human
+            })
+        });
     });
 
     await applyStealth(page);
     await page.goto(PRODUCT_URL, { waitUntil: 'domcontentloaded', timeout: 90000 });
-    
+
     await page.click('button#enquire.gt_group_enquire_btn');
     const modal = page.locator('#Modalpopup');
     await expect(modal).toBeVisible();
@@ -153,11 +149,11 @@ test('Group Individual - Popup Enquiry form fills correctly @individual_popup', 
     await naturalType(page, modal.locator('#wpforms-687-field_4-container input[type="tel"]'), '9876543210');
     await naturalType(page, modal.locator('#wpforms-687-field_9-container input[type="tel"]'), '9876543210');
     await naturalType(page, modal.locator('#wpforms-687-field_5'), 'Test');
-    
+
     await modal.locator('#wpforms-687-field_6').evaluate((el: HTMLInputElement) => { el.removeAttribute('readonly'); el.value = '25/09/2026'; });
     await modal.locator('#wpforms-687-field_7').fill('2');
     await modal.locator('#wpforms-687-field_8').selectOption({ index: 2 });
-    
+
     const captchaInput = modal.locator('#wpforms-687-field_13');
     if (await captchaInput.isVisible()) {
         await captchaInput.fill(await solveMathCaptcha(modal));
@@ -166,7 +162,7 @@ test('Group Individual - Popup Enquiry form fills correctly @individual_popup', 
     await runSimulation(page);
     await waitForToken(page);
     await modal.locator('#wpforms-submit-687').click({ force: true });
-    
+
     const successMsg = page.locator('div[id^="wpforms-confirmation-"], .wpforms-confirmation-container-full');
     await expect(successMsg.first()).toBeVisible({ timeout: 45000 });
     console.log('Group Individual Popup SUCCESS!');

@@ -66,17 +66,15 @@ test('Group Tours - Popup Enquiry form fills correctly @group_popup', async () =
     const context = await browser.newContext({ userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:122.0) Gecko/20100101 Firefox/122.0', viewport: { width: 1280, height: 720 }, locale: 'en-IN', timezoneId: 'Asia/Kolkata' });
     const page = await context.newPage();
 
-    // Intercept Google reCAPTCHA server-side verification
-    await page.route('**/recaptcha/api/siteverify**', async route => {
+    // Intercept Google reCAPTCHA requests to bypass bot detection
+    // This mocks the response from Google's servers so the form thinks verification passed
+    await page.route('**/(recaptcha/api/siteverify|recaptcha/api2/)**', async route => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
-        body: JSON.stringify({
-          success: true,
-          score: 0.9,
-          action: 'submit',
-          challenge_ts: new Date().toISOString(),
-          hostname: 'group.gtholidays.in'
+        body: JSON.stringify({ 
+          success: true, 
+          score: 0.9 // High score (0.9) ensures the request is treated as a real human
         })
       });
     });
@@ -125,17 +123,15 @@ test('Group Tours - Inline Enquiry form fills correctly @group_inline', async ()
     const context = await browser.newContext({ userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:122.0) Gecko/20100101 Firefox/122.0', viewport: { width: 1280, height: 720 }, locale: 'en-IN', timezoneId: 'Asia/Kolkata' });
     const page = await context.newPage();
 
-    // Intercept Google reCAPTCHA server-side verification
-    await page.route('**/recaptcha/api/siteverify**', async route => {
+    // Intercept Google reCAPTCHA requests to bypass bot detection
+    // This mocks the response from Google's servers so the form thinks verification passed
+    await page.route('**/(recaptcha/api/siteverify|recaptcha/api2/)**', async route => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
-        body: JSON.stringify({
-          success: true,
-          score: 0.9,
-          action: 'submit',
-          challenge_ts: new Date().toISOString(),
-          hostname: 'group.gtholidays.in'
+        body: JSON.stringify({ 
+          success: true, 
+          score: 0.9 // High score (0.9) ensures the request is treated as a real human
         })
       });
     });
