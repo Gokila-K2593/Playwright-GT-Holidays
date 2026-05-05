@@ -1,4 +1,4 @@
-import { test, expect, firefox } from '@playwright/test';
+import { test, expect, chromium } from '@playwright/test';
 
 const HOME_URL = 'https://gtholidays.in';
 
@@ -61,7 +61,9 @@ async function waitForTokenFast(page: any) {
 // ─────────────────────────────────────────
 test('Home Page - Popup Enquiry form fills correctly @home_popup', async () => {
     test.setTimeout(180000);
-    const browser = await firefox.launch({ headless: false });
+    const browser = await chromium.launch({ 
+      headless: process.env.CI ? true : false 
+    });
     const context = await browser.newContext({ userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:122.0) Gecko/20100101 Firefox/122.0', viewport: { width: 1280, height: 720 }, locale: 'en-IN', timezoneId: 'Asia/Kolkata' });
     const page = await context.newPage();
     await applyStealth(page);
@@ -91,7 +93,9 @@ test('Home Page - Popup Enquiry form fills correctly @home_popup', async () => {
 // ─────────────────────────────────────────
 test('Home Page - Inline Enquiry form fills correctly @home_inline', async () => {
     test.setTimeout(180000);
-    const browser = await firefox.launch({ headless: false });
+    const browser = await chromium.launch({ 
+      headless: process.env.CI ? true : false 
+    });
     const context = await browser.newContext({ userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:122.0) Gecko/20100101 Firefox/122.0', viewport: { width: 1280, height: 720 }, locale: 'en-IN', timezoneId: 'Asia/Kolkata' });
     const page = await context.newPage();
     await applyStealth(page);
@@ -121,7 +125,9 @@ test('Home Page - Inline Enquiry form fills correctly @home_inline', async () =>
 // ─────────────────────────────────────────
 test('Packages Page - Popup Enquiry form fills correctly @packages_popup', async () => {
     test.setTimeout(180000);
-    const browser = await firefox.launch({ headless: false });
+    const browser = await chromium.launch({ 
+      headless: process.env.CI ? true : false 
+    });
     const context = await browser.newContext({ userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:122.0) Gecko/20100101 Firefox/122.0', viewport: { width: 1280, height: 720 }, locale: 'en-IN', timezoneId: 'Asia/Kolkata' });
     const page = await context.newPage();
     await applyStealth(page);
@@ -153,7 +159,9 @@ test('Packages Page - Popup Enquiry form fills correctly @packages_popup', async
 // ─────────────────────────────────────────
 test('North India - Inline Enquiry form fills correctly @north_india_inline', async () => {
     test.setTimeout(120000);
-    const browser = await firefox.launch({ headless: false });
+    const browser = await chromium.launch({ 
+      headless: process.env.CI ? true : false 
+    });
     const context = await browser.newContext({ userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:122.0) Gecko/20100101 Firefox/122.0', viewport: { width: 1280, height: 720 }, locale: 'en-IN', timezoneId: 'Asia/Kolkata' });
     const page = await context.newPage();
     await applyStealth(page);
@@ -188,7 +196,9 @@ test('North India - Inline Enquiry form fills correctly @north_india_inline', as
 // ─────────────────────────────────────────
 test('East India - Popup Enquiry form fills correctly @east_india_popup', async () => {
     test.setTimeout(120000);
-    const browser = await firefox.launch({ headless: false });
+    const browser = await chromium.launch({ 
+      headless: process.env.CI ? true : false 
+    });
     const context = await browser.newContext({ userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:122.0) Gecko/20100101 Firefox/122.0', viewport: { width: 1280, height: 720 }, locale: 'en-IN', timezoneId: 'Asia/Kolkata' });
     const page = await context.newPage();
     await applyStealth(page);

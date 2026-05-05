@@ -1,4 +1,4 @@
-import { test, expect, firefox } from '@playwright/test';
+import { test, expect, chromium } from '@playwright/test';
 
 const PRODUCT_URL = 'https://group.gtholidays.in/product/europe-summer-group-departure-chennai/';
 
@@ -60,7 +60,9 @@ async function waitForToken(page: any) {
 // ─────────────────────────────────────────
 test('Group Individual - Inline Enquiry form fills correctly @individual_inline', async () => {
     test.setTimeout(180000);
-    const browser = await firefox.launch({ headless: false });
+    const browser = await chromium.launch({ 
+      headless: process.env.CI ? true : false 
+    });
     const context = await browser.newContext({ userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:122.0) Gecko/20100101 Firefox/122.0', viewport: { width: 1280, height: 720 }, locale: 'en-IN', timezoneId: 'Asia/Kolkata' });
     const page = await context.newPage();
 
@@ -117,7 +119,9 @@ test('Group Individual - Inline Enquiry form fills correctly @individual_inline'
 // ─────────────────────────────────────────
 test('Group Individual - Popup Enquiry form fills correctly @individual_popup', async () => {
     test.setTimeout(180000);
-    const browser = await firefox.launch({ headless: false });
+    const browser = await chromium.launch({ 
+      headless: process.env.CI ? true : false 
+    });
     const context = await browser.newContext({ userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:122.0) Gecko/20100101 Firefox/122.0', viewport: { width: 1280, height: 720 }, locale: 'en-IN', timezoneId: 'Asia/Kolkata' });
     const page = await context.newPage();
 
