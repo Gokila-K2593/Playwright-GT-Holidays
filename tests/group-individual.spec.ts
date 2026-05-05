@@ -1,14 +1,12 @@
-import { test, expect, chromium } from '@playwright/test';
+import { test, expect } from '@playwright/test';
+import { chromium } from 'playwright-extra';
+import stealth from 'puppeteer-extra-plugin-stealth';
+
+chromium.use(stealth());
 
 const PRODUCT_URL = 'https://group.gtholidays.in/product/europe-summer-group-departure-chennai/';
 
-async function applyStealth(page: any) {
-    await page.addInitScript(() => {
-        Object.defineProperty(navigator, 'webdriver', { get: () => undefined });
-        Object.defineProperty(navigator, 'languages', { get: () => ['en-IN', 'en'] });
-        Object.defineProperty(navigator, 'plugins', { get: () => [1, 2, 3, 4, 5] });
-    });
-}
+
 
 async function naturalType(page: any, locator: any, text: string) {
     await locator.click();
@@ -63,23 +61,14 @@ test('Group Individual - Inline Enquiry form fills correctly @individual_inline'
     const browser = await chromium.launch({
         headless: process.env.CI ? true : false
     });
-    const context = await browser.newContext({ userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:122.0) Gecko/20100101 Firefox/122.0', viewport: { width: 1280, height: 720 }, locale: 'en-IN', timezoneId: 'Asia/Kolkata' });
+    const context = await browser.newContext({ 
+        viewport: { width: 1280, height: 720 }, 
+        locale: 'en-IN', 
+        timezoneId: 'Asia/Kolkata' 
+    });
     const page = await context.newPage();
 
-    // Intercept Google reCAPTCHA requests to bypass bot detection
-    // This mocks the response from Google's servers so the form thinks verification passed
-    await page.route('**/(recaptcha/api/siteverify|recaptcha/api2/)**', async route => {
-        await route.fulfill({
-            status: 200,
-            contentType: 'application/json',
-            body: JSON.stringify({
-                success: true,
-                score: 0.9 // High score (0.9) ensures the request is treated as a real human
-            })
-        });
-    });
 
-    await applyStealth(page);
     await page.goto(PRODUCT_URL, { waitUntil: 'domcontentloaded', timeout: 90000 });
 
     await page.addStyleTag({ content: '#Modalpopup { display: none !important; } .gt-popup-overlay { display: none !important; }' });
@@ -120,23 +109,13 @@ test('Group Individual - Popup Enquiry form fills correctly @individual_popup', 
     const browser = await chromium.launch({
         headless: process.env.CI ? true : false
     });
-    const context = await browser.newContext({ userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:122.0) Gecko/20100101 Firefox/122.0', viewport: { width: 1280, height: 720 }, locale: 'en-IN', timezoneId: 'Asia/Kolkata' });
+    const context = await browser.newContext({ 
+        viewport: { width: 1280, height: 720 }, 
+        locale: 'en-IN', 
+        timezoneId: 'Asia/Kolkata' 
+    });
     const page = await context.newPage();
 
-    // Intercept Google reCAPTCHA requests to bypass bot detection
-    // This mocks the response from Google's servers so the form thinks verification passed
-    await page.route('**/(recaptcha/api/siteverify|recaptcha/api2/)**', async route => {
-        await route.fulfill({
-            status: 200,
-            contentType: 'application/json',
-            body: JSON.stringify({
-                success: true,
-                score: 0.9 // High score (0.9) ensures the request is treated as a real human
-            })
-        });
-    });
-
-    await applyStealth(page);
     await page.goto(PRODUCT_URL, { waitUntil: 'domcontentloaded', timeout: 90000 });
 
     await page.click('button#enquire.gt_group_enquire_btn');
