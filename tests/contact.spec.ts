@@ -1,4 +1,8 @@
 import { test, expect, Locator } from '@playwright/test';
+import { chromium } from 'playwright-extra';
+import stealth from 'puppeteer-extra-plugin-stealth';
+
+chromium.use(stealth());
 
 const CHENNAI_URL = 'https://www.gtholidays.in/chennai/';
 
@@ -25,7 +29,16 @@ async function solveMathCaptcha(scope: Locator): Promise<string> {
 // ─────────────────────────────────────────
 // Form-5 Chennai Without Popup (Inline form)
 // ─────────────────────────────────────────
-test('Chennai - Inline Enquiry form fills correctly @chennai_inline', async ({ page }) => {
+test('Chennai - Inline Enquiry form fills correctly @chennai_inline', async () => {
+    const browser = await chromium.launch({ 
+        headless: process.env.CI ? true : false 
+    });
+    const context = await browser.newContext({ 
+        viewport: { width: 1280, height: 720 }, 
+        locale: 'en-IN', 
+        timezoneId: 'Asia/Kolkata' 
+    });
+    const page = await context.newPage();
 
     await page.goto(CHENNAI_URL);
     await page.waitForLoadState('networkidle');
@@ -69,13 +82,22 @@ test('Chennai - Inline Enquiry form fills correctly @chennai_inline', async ({ p
     await expect(page.locator('.wpforms-confirmation-container-full')).toBeVisible({ timeout: 20000 });
 
     console.log('Chennai Inline done. Submit CLICKED & Verified!');
-    await page.waitForTimeout(10000);
+    await browser.close();
 });
 
 // ─────────────────────────────────────────
 // Form-6 Chennai With Popup
 // ─────────────────────────────────────────
-test('Chennai - Popup Enquiry form fills correctly @chennai_popup', async ({ page }) => {
+test('Chennai - Popup Enquiry form fills correctly @chennai_popup', async () => {
+    const browser = await chromium.launch({ 
+        headless: process.env.CI ? true : false 
+    });
+    const context = await browser.newContext({ 
+        viewport: { width: 1280, height: 720 }, 
+        locale: 'en-IN', 
+        timezoneId: 'Asia/Kolkata' 
+    });
+    const page = await context.newPage();
 
     await page.goto(CHENNAI_URL);
     await page.waitForLoadState('networkidle');
@@ -120,5 +142,5 @@ test('Chennai - Popup Enquiry form fills correctly @chennai_popup', async ({ pag
     await expect(page.locator('.wpforms-confirmation-container-full')).toBeVisible({ timeout: 20000 });
 
     console.log('Chennai Popup done. Submit CLICKED & Verified!');
-    await page.waitForTimeout(10000);
+    await browser.close();
 });

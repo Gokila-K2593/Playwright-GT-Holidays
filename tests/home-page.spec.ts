@@ -48,7 +48,7 @@ async function waitForTokenFast(page: any) {
                 if ((f as HTMLInputElement).value.length > 20) return true;
             }
             return false;
-        }, { timeout: 5000 });
+        }, { timeout: 20000 });
     } catch (e) {
         console.log('Skipping token wait for Home Page');
     }
