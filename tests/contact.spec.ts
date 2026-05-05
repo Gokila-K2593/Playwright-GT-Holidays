@@ -62,15 +62,18 @@ test('Chennai - Inline Enquiry form fills correctly @chennai_inline', async ({ p
     await expect(inlineForm.locator('#wpforms-28929-field_7')).toHaveValue('25/09/2026');
     await expect(inlineForm.locator('#wpforms-28929-field_20')).toHaveValue(answer);
 
-    // Submit visible check
-    await expect(inlineForm.locator('.wpforms-submit')).toBeVisible();
+    // Submit visible check — UPDATED: CLICKING NOW
+    await inlineForm.locator('#wpforms-submit-28929').click();
 
-    console.log('Chennai Inline done. Submit NOT clicked!');
-    await page.waitForTimeout(30000);
+    // Verify success message (Targeting specific WPForms success container)
+    await expect(page.locator('.wpforms-confirmation-container-full')).toBeVisible({ timeout: 20000 });
+
+    console.log('Chennai Inline done. Submit CLICKED & Verified!');
+    await page.waitForTimeout(10000);
 });
 
 // ─────────────────────────────────────────
-// Chennai With Popup
+// Form-6 Chennai With Popup
 // ─────────────────────────────────────────
 test('Chennai - Popup Enquiry form fills correctly @chennai_popup', async ({ page }) => {
 
@@ -110,9 +113,12 @@ test('Chennai - Popup Enquiry form fills correctly @chennai_popup', async ({ pag
     await expect(modal.locator('#wpforms-28929-field_7')).toHaveValue('25/09/2026');
     await expect(modal.locator('#wpforms-28929-field_20')).toHaveValue(answer);
 
-    // Submit visible check
-    await expect(modal.locator('.wpforms-submit')).toBeVisible();
+    // Submit visible check — UPDATED: CLICKING NOW
+    await modal.locator('#wpforms-submit-28929').click();
 
-    console.log('Chennai Popup done. Submit NOT clicked!');
-    await page.waitForTimeout(30000);
+    // Verify success message (Targeting specific WPForms success container)
+    await expect(page.locator('.wpforms-confirmation-container-full')).toBeVisible({ timeout: 20000 });
+
+    console.log('Chennai Popup done. Submit CLICKED & Verified!');
+    await page.waitForTimeout(10000);
 });
