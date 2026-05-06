@@ -16,17 +16,36 @@ on:
 jobs:
   test:
     timeout-minutes: 60
-    runs-on: ubuntu-latest
+    # CHANGED: Windows runners are less likely to be flagged as 'headless bots' 
+    # by Google reCAPTCHA v3 compared to Linux data centers.
+    runs-on: windows-latest 
     steps:
     - uses: actions/checkout@v5
+    
     - uses: actions/setup-node@v5
       with:
         node-version: lts/*
+
+    # NEW: Critical for reCAPTCHA v3 success. 
+    # This saves and restores the 'user_data' folder so Google sees 
+    # your browser as a "returning visitor" with existing cookies/history.
+    - name: Cache Browser Profile
+      uses: actions/cache@v4
+      with:
+        path: user_data
+        key: ${{ runner.os }}-playwright-reputation-${{ github.ref_name }}
+        restore-keys: |
+          ${{ runner.os }}-playwright-reputation-
+
     - name: Install dependencies
       run: npm ci
+
     - name: Install Playwright Browsers
-      run: npx playwright install --with-deps
+      run: npx playwright install --with-deps chromium
+
     - name: Run Playwright tests
+      # 'shell: bash' is required to run your script logic on a Windows runner
+      shell: bash 
       run: |
         TAG="${{ github.event.client_payload.tag || github.event.inputs.tag }}"
         if [ -z "$TAG" ]; then
@@ -34,6 +53,7 @@ jobs:
         else
           npx playwright test --grep "$TAG" --project=chromium
         fi
+
     - uses: actions/upload-artifact@v4
       if: always()
       with:
