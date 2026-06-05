@@ -24,7 +24,7 @@ jobs:
     
     - uses: actions/setup-node@v5
       with:
-        node-version: lts/*
+        node-version: 20
 
     # NEW: Critical for reCAPTCHA v3 success. 
     # This saves and restores the 'user_data' folder so Google sees 
@@ -41,7 +41,7 @@ jobs:
       run: npm ci
 
     - name: Install Playwright Browsers
-      run: npx playwright install --with-deps chromium
+      run: npx playwright install chromium
 
     - name: Run Playwright tests
       # 'shell: bash' is required to run your script logic on a Windows runner
