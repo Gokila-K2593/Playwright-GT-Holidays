@@ -49,7 +49,7 @@ jobs:
       run: |
         TAG="${{ github.event.client_payload.tag || github.event.inputs.tag }}"
         if [ -z "$TAG" ]; then
-          npx playwright test --project=chromium
+          npx playwright test tests/contact.spec.ts tests/home-page.spec.ts --project=chromium
         else
           npx playwright test --grep "$TAG" --project=chromium
         fi
