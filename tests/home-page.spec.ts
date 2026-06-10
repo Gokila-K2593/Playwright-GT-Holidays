@@ -220,7 +220,7 @@ test('East India - Popup Enquiry form fills correctly @east_india_popup', async 
     });
     const page = await context.newPage();
 
-    await page.goto(HOME_URL + '/india/east-india-tour-packages/', { waitUntil: 'domcontentloaded', timeout: 90000 });
+    await page.goto(HOME_URL + '/packages/india/east-india/', { waitUntil: 'domcontentloaded', timeout: 90000 });
     await page.locator('#enquire').first().click();
     const modal = page.locator('#Modalpopup');
     await expect(modal).toBeVisible();
