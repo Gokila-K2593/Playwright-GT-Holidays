@@ -59,13 +59,13 @@ async function waitForTokenFast(page: any) {
 // ─────────────────────────────────────────
 test('Home Page - Popup Enquiry form fills correctly @home_popup', async () => {
     test.setTimeout(180000);
-    const browser = await chromium.launch({ 
-      headless: process.env.CI ? true : false 
+    const browser = await chromium.launch({
+        headless: process.env.CI ? true : false
     });
-    const context = await browser.newContext({ 
-        viewport: { width: 1280, height: 720 }, 
-        locale: 'en-IN', 
-        timezoneId: 'Asia/Kolkata' 
+    const context = await browser.newContext({
+        viewport: { width: 1280, height: 720 },
+        locale: 'en-IN',
+        timezoneId: 'Asia/Kolkata'
     });
     const page = await context.newPage();
 
@@ -95,13 +95,13 @@ test('Home Page - Popup Enquiry form fills correctly @home_popup', async () => {
 // ─────────────────────────────────────────
 test('Home Page - Inline Enquiry form fills correctly @home_inline', async () => {
     test.setTimeout(180000);
-    const browser = await chromium.launch({ 
-      headless: process.env.CI ? true : false 
+    const browser = await chromium.launch({
+        headless: process.env.CI ? true : false
     });
-    const context = await browser.newContext({ 
-        viewport: { width: 1280, height: 720 }, 
-        locale: 'en-IN', 
-        timezoneId: 'Asia/Kolkata' 
+    const context = await browser.newContext({
+        viewport: { width: 1280, height: 720 },
+        locale: 'en-IN',
+        timezoneId: 'Asia/Kolkata'
     });
     const page = await context.newPage();
 
@@ -131,13 +131,13 @@ test('Home Page - Inline Enquiry form fills correctly @home_inline', async () =>
 // ─────────────────────────────────────────
 test('Packages Page - Popup Enquiry form fills correctly @packages_popup', async () => {
     test.setTimeout(180000);
-    const browser = await chromium.launch({ 
-      headless: process.env.CI ? true : false 
+    const browser = await chromium.launch({
+        headless: process.env.CI ? true : false
     });
-    const context = await browser.newContext({ 
-        viewport: { width: 1280, height: 720 }, 
-        locale: 'en-IN', 
-        timezoneId: 'Asia/Kolkata' 
+    const context = await browser.newContext({
+        viewport: { width: 1280, height: 720 },
+        locale: 'en-IN',
+        timezoneId: 'Asia/Kolkata'
     });
     const page = await context.newPage();
 
@@ -159,6 +159,7 @@ test('Packages Page - Popup Enquiry form fills correctly @packages_popup', async
     await modal.locator('#wpforms-28929-field_20').fill(await solveMathCaptcha(modal));
 
     await runSimulationFast(page);
+    await waitForTokenFast(page);
     await modal.locator('#wpforms-submit-28929').click({ force: true });
     await expect(page.locator('div[id^="wpforms-confirmation-"], .wpforms-confirmation-container-full').first()).toBeVisible({ timeout: 40000 });
     await browser.close();
@@ -169,13 +170,13 @@ test('Packages Page - Popup Enquiry form fills correctly @packages_popup', async
 // ─────────────────────────────────────────
 test('North India - Inline Enquiry form fills correctly @north_india_inline', async () => {
     test.setTimeout(120000);
-    const browser = await chromium.launch({ 
-      headless: process.env.CI ? true : false 
+    const browser = await chromium.launch({
+        headless: process.env.CI ? true : false
     });
-    const context = await browser.newContext({ 
-        viewport: { width: 1280, height: 720 }, 
-        locale: 'en-IN', 
-        timezoneId: 'Asia/Kolkata' 
+    const context = await browser.newContext({
+        viewport: { width: 1280, height: 720 },
+        locale: 'en-IN',
+        timezoneId: 'Asia/Kolkata'
     });
     const page = await context.newPage();
 
@@ -198,8 +199,8 @@ test('North India - Inline Enquiry form fills correctly @north_india_inline', as
     await form.locator('#wpforms-28929-field_8').fill('2');
     await form.locator('#wpforms-28929-field_9').selectOption({ index: 2 });
     await form.locator('#wpforms-28929-field_20').fill(await solveMathCaptcha(form));
-
     await runSimulationFast(page);
+    await waitForTokenFast(page);
     await form.locator('#wpforms-submit-28929').click({ force: true });
     await expect(page.locator('div[id^="wpforms-confirmation-"], .wpforms-confirmation-container-full').first()).toBeVisible({ timeout: 40000 });
     await browser.close();
@@ -210,13 +211,13 @@ test('North India - Inline Enquiry form fills correctly @north_india_inline', as
 // ─────────────────────────────────────────
 test('East India - Popup Enquiry form fills correctly @east_india_popup', async () => {
     test.setTimeout(120000);
-    const browser = await chromium.launch({ 
-      headless: process.env.CI ? true : false 
+    const browser = await chromium.launch({
+        headless: process.env.CI ? true : false
     });
-    const context = await browser.newContext({ 
-        viewport: { width: 1280, height: 720 }, 
-        locale: 'en-IN', 
-        timezoneId: 'Asia/Kolkata' 
+    const context = await browser.newContext({
+        viewport: { width: 1280, height: 720 },
+        locale: 'en-IN',
+        timezoneId: 'Asia/Kolkata'
     });
     const page = await context.newPage();
 
@@ -238,6 +239,7 @@ test('East India - Popup Enquiry form fills correctly @east_india_popup', async 
     await modal.locator('#wpforms-28929-field_20').fill(await solveMathCaptcha(modal));
 
     await runSimulationFast(page);
+    await waitForTokenFast(page);
     await modal.locator('#wpforms-submit-28929').click({ force: true });
     await expect(page.locator('div[id^="wpforms-confirmation-"], .wpforms-confirmation-container-full').first()).toBeVisible({ timeout: 40000 });
     await browser.close();
