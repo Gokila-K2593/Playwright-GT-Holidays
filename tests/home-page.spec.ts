@@ -29,6 +29,7 @@ async function naturalType(page: any, locator: any, text: string) {
     }
 }
 
+
 async function runSimulationFast(page: any) {
     // Faster simulation for Home Page
     for (let i = 0; i < 3; i++) {

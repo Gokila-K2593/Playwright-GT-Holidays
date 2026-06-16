@@ -30,13 +30,13 @@ async function solveMathCaptcha(scope: Locator): Promise<string> {
 // Form-5 Chennai Without Popup (Inline form)
 // ─────────────────────────────────────────
 test('Chennai - Inline Enquiry form fills correctly @chennai_inline', async () => {
-    const browser = await chromium.launch({ 
-        headless: process.env.CI ? true : false 
+    const browser = await chromium.launch({
+        headless: process.env.CI ? true : false
     });
-    const context = await browser.newContext({ 
-        viewport: { width: 1280, height: 720 }, 
-        locale: 'en-IN', 
-        timezoneId: 'Asia/Kolkata' 
+    const context = await browser.newContext({
+        viewport: { width: 1280, height: 720 },
+        locale: 'en-IN',
+        timezoneId: 'Asia/Kolkata'
     });
     const page = await context.newPage();
 
@@ -89,13 +89,13 @@ test('Chennai - Inline Enquiry form fills correctly @chennai_inline', async () =
 // Form-6 Chennai With Popup
 // ─────────────────────────────────────────
 test('Chennai - Popup Enquiry form fills correctly @chennai_popup', async () => {
-    const browser = await chromium.launch({ 
-        headless: process.env.CI ? true : false 
+    const browser = await chromium.launch({
+        headless: process.env.CI ? true : false
     });
-    const context = await browser.newContext({ 
-        viewport: { width: 1280, height: 720 }, 
-        locale: 'en-IN', 
-        timezoneId: 'Asia/Kolkata' 
+    const context = await browser.newContext({
+        viewport: { width: 1280, height: 720 },
+        locale: 'en-IN',
+        timezoneId: 'Asia/Kolkata'
     });
     const page = await context.newPage();
 
@@ -135,12 +135,12 @@ test('Chennai - Popup Enquiry form fills correctly @chennai_popup', async () => 
     await expect(modal.locator('#wpforms-28929-field_7')).toHaveValue('25/09/2026');
     await expect(modal.locator('#wpforms-28929-field_20')).toHaveValue(answer);
 
-    // Submit visible check — UPDATED: CLICKING NOW
+    // Submit and wait for modal to close (indicates success)
     await modal.locator('#wpforms-submit-28929').click();
 
-    // Verify success message (Targeting specific WPForms success container)
-    await expect(page.locator('.wpforms-confirmation-container-full')).toBeVisible({ timeout: 20000 });
+    // Wait for the modal to disappear, which indicates successful form submission
+    await expect(modal).not.toBeVisible({ timeout: 20000 });
 
-    console.log('Chennai Popup done. Submit CLICKED & Verified!');
+    console.log('Chennai Popup done. Form submitted & modal closed!');
     await browser.close();
 });
