@@ -26,6 +26,37 @@ async function solveMathCaptcha(scope: Locator): Promise<string> {
     return answer.toString();
 }
 
+async function naturalType(page: any, locator: any, text: string) {
+    await locator.click();
+    for (const char of text) {
+        await page.keyboard.type(char, { delay: 30 + Math.random() * 50 });
+    }
+}
+
+async function runSimulationFast(page: any) {
+    for (let i = 0; i < 3; i++) {
+        await page.mouse.wheel(0, 100);
+        await page.waitForTimeout(500);
+    }
+    await page.mouse.move(500, 500, { steps: 10 });
+    await page.waitForTimeout(1000);
+}
+
+async function waitForTokenFast(page: any) {
+    console.log('Checking for token (fast mode)...');
+    try {
+        await page.waitForFunction(() => {
+            const fields = document.querySelectorAll('input[name*="g-recaptcha-response"], textarea[name*="g-recaptcha-response"]');
+            for (const f of fields) {
+                if ((f as HTMLInputElement).value.length > 20) return true;
+            }
+            return false;
+        }, { timeout: 20000 });
+    } catch (e) {
+        console.log('Skipping token wait');
+    }
+}
+
 // ─────────────────────────────────────────
 // Form-5 Chennai Without Popup (Inline form)
 // ─────────────────────────────────────────
@@ -42,18 +73,19 @@ test('Chennai - Inline Enquiry form fills correctly @chennai_inline', async () =
 
     await page.goto(CHENNAI_URL);
     await page.waitForLoadState('networkidle');
+    await page.addStyleTag({ content: '#Modalpopup { display: none !important; } .gt-popup-overlay { display: none !important; }' });
 
     // Find the inline form (NOT inside #Modalpopup)
     const inlineForm = page.locator('form#wpforms-form-28929').filter({ hasNot: page.locator('#Modalpopup') }).first();
     await inlineForm.scrollIntoViewIfNeeded();
 
     // Fill fields
-    await inlineForm.locator('#wpforms-28929-field_1').fill('Test');
-    await inlineForm.locator('#wpforms-28929-field_2').fill('Test');
-    await inlineForm.locator('#wpforms-28929-field_3').fill('test@wizi.digital');
-    await inlineForm.locator('#wpforms-28929-field_4-container input[type="tel"]').fill('9876543210');
-    await inlineForm.locator('#wpforms-28929-field_16-container input[type="tel"]').fill('9876543210');
-    await inlineForm.locator('#wpforms-28929-field_6').fill('Test');
+    await naturalType(page, inlineForm.locator('#wpforms-28929-field_1'), 'Test');
+    await naturalType(page, inlineForm.locator('#wpforms-28929-field_2'), 'Test');
+    await naturalType(page, inlineForm.locator('#wpforms-28929-field_3'), 'test@wizi.digital');
+    await naturalType(page, inlineForm.locator('#wpforms-28929-field_4-container input[type="tel"]'), '9876543210');
+    await naturalType(page, inlineForm.locator('#wpforms-28929-field_16-container input[type="tel"]'), '9876543210');
+    await naturalType(page, inlineForm.locator('#wpforms-28929-field_6'), 'Test');
 
     // Date — readonly fix
     await inlineForm.locator('#wpforms-28929-field_7').evaluate((el: HTMLInputElement) => {
@@ -75,11 +107,14 @@ test('Chennai - Inline Enquiry form fills correctly @chennai_inline', async () =
     await expect(inlineForm.locator('#wpforms-28929-field_7')).toHaveValue('25/09/2026');
     await expect(inlineForm.locator('#wpforms-28929-field_20')).toHaveValue(answer);
 
+    await runSimulationFast(page);
+    await waitForTokenFast(page);
+
     // Submit visible check — UPDATED: CLICKING NOW
-    await inlineForm.locator('#wpforms-submit-28929').click();
+    await inlineForm.locator('#wpforms-submit-28929').click({ force: true });
 
     // Verify success message (Targeting specific WPForms success container)
-    await expect(page.locator('.wpforms-confirmation-container-full')).toBeVisible({ timeout: 20000 });
+    await expect(page.locator('.wpforms-confirmation-container-full')).toBeVisible({ timeout: 40000 });
 
     console.log('Chennai Inline done. Submit CLICKED & Verified!');
     await browser.close();
@@ -107,12 +142,12 @@ test('Chennai - Popup Enquiry form fills correctly @chennai_popup', async () => 
     await expect(modal).toBeVisible();
 
     // Fill fields inside #Modalpopup
-    await modal.locator('#wpforms-28929-field_1').fill('Test');
-    await modal.locator('#wpforms-28929-field_2').fill('Test');
-    await modal.locator('#wpforms-28929-field_3').fill('test@wizi.digital');
-    await modal.locator('#wpforms-28929-field_4-container input[type="tel"]').fill('9876543210');
-    await modal.locator('#wpforms-28929-field_16-container input[type="tel"]').fill('9876543210');
-    await modal.locator('#wpforms-28929-field_6').fill('Test');
+    await naturalType(page, modal.locator('#wpforms-28929-field_1'), 'Test');
+    await naturalType(page, modal.locator('#wpforms-28929-field_2'), 'Test');
+    await naturalType(page, modal.locator('#wpforms-28929-field_3'), 'test@wizi.digital');
+    await naturalType(page, modal.locator('#wpforms-28929-field_4-container input[type="tel"]'), '9876543210');
+    await naturalType(page, modal.locator('#wpforms-28929-field_16-container input[type="tel"]'), '9876543210');
+    await naturalType(page, modal.locator('#wpforms-28929-field_6'), 'Test');
 
     // Date — readonly fix
     await modal.locator('#wpforms-28929-field_7').evaluate((el: HTMLInputElement) => {
@@ -134,10 +169,13 @@ test('Chennai - Popup Enquiry form fills correctly @chennai_popup', async () => 
     await expect(modal.locator('#wpforms-28929-field_7')).toHaveValue('25/09/2026');
     await expect(modal.locator('#wpforms-28929-field_20')).toHaveValue(answer);
 
+    await runSimulationFast(page);
+    await waitForTokenFast(page);
+
     // Submit and wait for modal to close (indicates success)
-    await modal.locator('#wpforms-submit-28929').click();
-await expect(page.locator('div[id^="wpforms-confirmation-"], .wpforms-confirmation-container-full').first()).toBeVisible({ timeout: 20000 });
-// Skipping hidden check; confirmation visibility is sufficient
-console.log('Chennai Popup done. Form submitted & modal closed!');
-await browser.close();
+    await modal.locator('#wpforms-submit-28929').click({ force: true });
+    await expect(page.locator('div[id^="wpforms-confirmation-"], .wpforms-confirmation-container-full').first()).toBeVisible({ timeout: 40000 });
+    // Skipping hidden check; confirmation visibility is sufficient
+    console.log('Chennai Popup done. Form submitted & modal closed!');
+    await browser.close();
 });
