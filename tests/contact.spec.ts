@@ -79,7 +79,7 @@ test('Chennai - Inline Enquiry form fills correctly @chennai_inline', async () =
     const inlineForm = page.locator('form#wpforms-form-28929').filter({ hasNot: page.locator('#Modalpopup') }).first();
     await inlineForm.scrollIntoViewIfNeeded();
 
-    // Fill fields
+
     await naturalType(page, inlineForm.locator('#wpforms-28929-field_1'), 'Test');
     await naturalType(page, inlineForm.locator('#wpforms-28929-field_2'), 'Test');
     await naturalType(page, inlineForm.locator('#wpforms-28929-field_3'), 'test@wizi.digital');
