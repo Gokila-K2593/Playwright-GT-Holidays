@@ -1,4 +1,5 @@
 name: Playwright Tests
+run-name: ${{ github.event.client_payload.tag || github.event.inputs.tag || 'Playwright Tests' }}
 on:
   push:
     branches: [ master, main ]

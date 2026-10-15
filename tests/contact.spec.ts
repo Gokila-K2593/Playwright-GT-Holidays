@@ -5,6 +5,9 @@ import stealth from 'puppeteer-extra-plugin-stealth';
 chromium.use(stealth());
 
 const CHENNAI_URL = 'https://www.gtholidays.in/chennai/';
+const KANYAKUMARI_URL = 'https://www.gtholidays.in/kanyakumari/';
+const MADURAI_URL = 'https://www.gtholidays.in/madurai/';
+const COIMBATORE_URL = 'https://www.gtholidays.in/coimbatore/';
 
 /**
  * Solves the math captcha found in the given scope (modal or inline form)
@@ -177,5 +180,166 @@ test('Chennai - Popup Enquiry form fills correctly @chennai_popup', async () => 
     await expect(page.locator('div[id^="wpforms-confirmation-"], .wpforms-confirmation-container-full').first()).toBeVisible({ timeout: 40000 });
     // Skipping hidden check; confirmation visibility is sufficient
     console.log('Chennai Popup done. Form submitted & modal closed!');
+    await browser.close();
+});
+
+// ─────────────────────────────────────────
+// Form Kanyakumari With Popup (@kanyakumari_popup)
+// ─────────────────────────────────────────
+test('Kanyakumari - Popup Enquiry form fills correctly @kanyakumari_popup', async () => {
+    const browser = await chromium.launch({
+        headless: process.env.CI ? true : false
+    });
+    const context = await browser.newContext({
+        viewport: { width: 1280, height: 720 },
+        locale: 'en-IN',
+        timezoneId: 'Asia/Kolkata'
+    });
+    const page = await context.newPage();
+
+    await page.goto(KANYAKUMARI_URL, { waitUntil: 'domcontentloaded', timeout: 90000 });
+    await page.waitForSelector('button#enquire.gt_enquire_btn, #enquire', { timeout: 30000 });
+    await page.click('button#enquire.gt_enquire_btn, #enquire');
+    const modal = page.locator('#Modalpopup');
+    await expect(modal).toBeVisible();
+
+    await naturalType(page, modal.locator('#wpforms-28929-field_1'), 'Test');
+    await naturalType(page, modal.locator('#wpforms-28929-field_2'), 'Test');
+    await naturalType(page, modal.locator('#wpforms-28929-field_3'), 'test@wizi.digital');
+    await naturalType(page, modal.locator('#wpforms-28929-field_4-container input[type="tel"]'), '9876543210');
+    await naturalType(page, modal.locator('#wpforms-28929-field_16-container input[type="tel"]'), '9876543210');
+    await naturalType(page, modal.locator('#wpforms-28929-field_6'), 'Test');
+
+    await modal.locator('#wpforms-28929-field_7').evaluate((el: HTMLInputElement) => {
+        el.removeAttribute('readonly');
+        el.value = '25/09/2026';
+    });
+
+    await modal.locator('#wpforms-28929-field_8').fill('2');
+    await modal.locator('#wpforms-28929-field_9').selectOption({ index: 2 });
+
+    const answer = await solveMathCaptcha(modal);
+    await modal.locator('#wpforms-28929-field_20').fill(answer);
+
+    await expect(modal.locator('#wpforms-28929-field_1')).toHaveValue('Test');
+    await expect(modal.locator('#wpforms-28929-field_3')).toHaveValue('test@wizi.digital');
+    await expect(modal.locator('#wpforms-28929-field_4-container input[type="tel"]')).toHaveValue(/.*9.*8.*7.*6.*5.*4.*3.*2.*1.*0.*/);
+    await expect(modal.locator('#wpforms-28929-field_7')).toHaveValue('25/09/2026');
+    await expect(modal.locator('#wpforms-28929-field_20')).toHaveValue(answer);
+
+    await runSimulationFast(page);
+    await waitForTokenFast(page);
+
+    await modal.locator('#wpforms-submit-28929').click({ force: true });
+    await expect(page.locator('div[id^="wpforms-confirmation-"], .wpforms-confirmation-container-full').first()).toBeVisible({ timeout: 40000 });
+    console.log('Kanyakumari Popup done. Form submitted & verified!');
+    await browser.close();
+});
+
+// ─────────────────────────────────────────
+// Form Madurai Without Popup (Inline) (@madurai_inline)
+// ─────────────────────────────────────────
+test('Madurai - Inline Enquiry form fills correctly @madurai_inline', async () => {
+    const browser = await chromium.launch({
+        headless: process.env.CI ? true : false
+    });
+    const context = await browser.newContext({
+        viewport: { width: 1280, height: 720 },
+        locale: 'en-IN',
+        timezoneId: 'Asia/Kolkata'
+    });
+    const page = await context.newPage();
+
+    await page.goto(MADURAI_URL, { waitUntil: 'domcontentloaded', timeout: 90000 });
+    await page.waitForLoadState('networkidle');
+    await page.addStyleTag({ content: '#Modalpopup { display: none !important; } .gt-popup-overlay { display: none !important; }' });
+
+    const inlineForm = page.locator('form#wpforms-form-28929').filter({ hasNot: page.locator('#Modalpopup') }).first();
+    await inlineForm.scrollIntoViewIfNeeded();
+
+    await naturalType(page, inlineForm.locator('#wpforms-28929-field_1'), 'Test');
+    await naturalType(page, inlineForm.locator('#wpforms-28929-field_2'), 'Test');
+    await naturalType(page, inlineForm.locator('#wpforms-28929-field_3'), 'test@wizi.digital');
+    await naturalType(page, inlineForm.locator('#wpforms-28929-field_4-container input[type="tel"]'), '9876543210');
+    await naturalType(page, inlineForm.locator('#wpforms-28929-field_16-container input[type="tel"]'), '9876543210');
+    await naturalType(page, inlineForm.locator('#wpforms-28929-field_6'), 'Test');
+
+    await inlineForm.locator('#wpforms-28929-field_7').evaluate((el: HTMLInputElement) => {
+        el.removeAttribute('readonly');
+        el.value = '25/09/2026';
+    });
+
+    await inlineForm.locator('#wpforms-28929-field_8').fill('2');
+    await inlineForm.locator('#wpforms-28929-field_9').selectOption({ index: 2 });
+
+    const answer = await solveMathCaptcha(inlineForm);
+    await inlineForm.locator('#wpforms-28929-field_20').fill(answer);
+
+    await expect(inlineForm.locator('#wpforms-28929-field_1')).toHaveValue('Test');
+    await expect(inlineForm.locator('#wpforms-28929-field_3')).toHaveValue('test@wizi.digital');
+    await expect(inlineForm.locator('#wpforms-28929-field_4-container input[type="tel"]')).toHaveValue(/.*9.*8.*7.*6.*5.*4.*3.*2.*1.*0.*/);
+    await expect(inlineForm.locator('#wpforms-28929-field_7')).toHaveValue('25/09/2026');
+    await expect(inlineForm.locator('#wpforms-28929-field_20')).toHaveValue(answer);
+
+    await runSimulationFast(page);
+    await waitForTokenFast(page);
+
+    await inlineForm.locator('#wpforms-submit-28929').click({ force: true });
+    await expect(page.locator('.wpforms-confirmation-container-full, div[id^="wpforms-confirmation-"]').first()).toBeVisible({ timeout: 40000 });
+
+    console.log('Madurai Inline done. Submit CLICKED & Verified!');
+    await browser.close();
+});
+
+// ─────────────────────────────────────────
+// Form Coimbatore With Popup (@coimbatore_popup)
+// ─────────────────────────────────────────
+test('Coimbatore - Popup Enquiry form fills correctly @coimbatore_popup', async () => {
+    const browser = await chromium.launch({
+        headless: process.env.CI ? true : false
+    });
+    const context = await browser.newContext({
+        viewport: { width: 1280, height: 720 },
+        locale: 'en-IN',
+        timezoneId: 'Asia/Kolkata'
+    });
+    const page = await context.newPage();
+
+    await page.goto(COIMBATORE_URL, { waitUntil: 'domcontentloaded', timeout: 90000 });
+    await page.waitForSelector('button#enquire.gt_enquire_btn, #enquire', { timeout: 30000 });
+    await page.click('button#enquire.gt_enquire_btn, #enquire');
+    const modal = page.locator('#Modalpopup');
+    await expect(modal).toBeVisible();
+
+    await naturalType(page, modal.locator('#wpforms-28929-field_1'), 'Test');
+    await naturalType(page, modal.locator('#wpforms-28929-field_2'), 'Test');
+    await naturalType(page, modal.locator('#wpforms-28929-field_3'), 'test@wizi.digital');
+    await naturalType(page, modal.locator('#wpforms-28929-field_4-container input[type="tel"]'), '9876543210');
+    await naturalType(page, modal.locator('#wpforms-28929-field_16-container input[type="tel"]'), '9876543210');
+    await naturalType(page, modal.locator('#wpforms-28929-field_6'), 'Test');
+
+    await modal.locator('#wpforms-28929-field_7').evaluate((el: HTMLInputElement) => {
+        el.removeAttribute('readonly');
+        el.value = '25/09/2026';
+    });
+
+    await modal.locator('#wpforms-28929-field_8').fill('2');
+    await modal.locator('#wpforms-28929-field_9').selectOption({ index: 2 });
+
+    const answer = await solveMathCaptcha(modal);
+    await modal.locator('#wpforms-28929-field_20').fill(answer);
+
+    await expect(modal.locator('#wpforms-28929-field_1')).toHaveValue('Test');
+    await expect(modal.locator('#wpforms-28929-field_3')).toHaveValue('test@wizi.digital');
+    await expect(modal.locator('#wpforms-28929-field_4-container input[type="tel"]')).toHaveValue(/.*9.*8.*7.*6.*5.*4.*3.*2.*1.*0.*/);
+    await expect(modal.locator('#wpforms-28929-field_7')).toHaveValue('25/09/2026');
+    await expect(modal.locator('#wpforms-28929-field_20')).toHaveValue(answer);
+
+    await runSimulationFast(page);
+    await waitForTokenFast(page);
+
+    await modal.locator('#wpforms-submit-28929').click({ force: true });
+    await expect(page.locator('div[id^="wpforms-confirmation-"], .wpforms-confirmation-container-full').first()).toBeVisible({ timeout: 40000 });
+    console.log('Coimbatore Popup done. Form submitted & verified!');
     await browser.close();
 });
